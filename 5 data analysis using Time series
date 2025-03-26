@@ -1,0 +1,41 @@
+#Need to install daily minimum temperature dataset from Kaggle dataset 
+pip install statsmodels
+
+
+from pandas import read_csv
+from matplotlib import pyplot
+from statsmodels.tsa.ar_model import AutoReg
+from sklearn.metrics import mean_squared_error
+from math import sqrt
+import numpy as np
+
+series = read_csv("C:/Users/vinay/OneDrive/Desktop/bI/datasets/1_Daily_minimum_temps.csv", header=0,index_col=0,parse_dates=True, dayfirst=True, dtype=str)
+print(series.head())
+series = series.squeeze()
+# Fix: Remove unexpected characters and convert to float
+series = series.str.replace(r'[^0-9.-]', '', regex=True)  # Remove non-numeric characters
+series = series.astype(float)  # Convert to float
+series = series.dropna()  # Drop any remaining NaN values
+X = series.values
+train, test = X[:len(X)-7], X[len(X)-7:]  # Ensure correct train-test split
+model = AutoReg(train,lags=30)
+model_fit = model.fit()
+print('Lag: %s' % model_fit.ar_lags)
+print('Coefficients: %s' % model_fit.params)
+predictions = model_fit.predict(start=len(train), end=len(train)+len(test)-1, dynamic=False)
+for i in range(len(predictions)):
+    print('predicted=%f, expected=%f' % (predictions[i], test[i]))
+rmse = sqrt(mean_squared_error(test, predictions))
+print('Test RMSE: %.3f' % rmse)
+pyplot.plot(test, label='Actual')
+pyplot.plot(predictions, color='red',label='Predicted')
+pyplot.legend()
+pyplot.show()
+
+
+
+ python --version
+        pip install -U Scikit-learn 
+        pip install pandas
+        pip install matplotlib
+        pip install statsmodels
