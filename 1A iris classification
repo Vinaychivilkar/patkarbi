@@ -1,0 +1,33 @@
+step 1 :install scikit-learn package in cmd 
+        python --version
+        pip install -U Scikit-learn 
+        pip install pandas
+        pip install matplotlib
+step 2 : code
+          
+          from sklearn.datasets import load_iris
+          from sklearn.model_selection import train_test_split
+          from sklearn.naive_bayes import GaussianNB
+          from sklearn import metrics
+              
+          iris = load_iris()
+                   
+          X = iris.data  
+          y = iris.target  
+                   
+          X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=1)
+          
+          gnb = GaussianNB()
+          gnb.fit(X_train, y_train)
+          
+          y_pred = gnb.predict(X_test)
+        
+          accuracy = metrics.accuracy_score(y_test, y_pred) * 100
+          print("Gaussian Naïve Bayes model accuracy (in %):", accuracy)
+
+
+
+
+
+
+
