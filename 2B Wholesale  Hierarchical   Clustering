@@ -1,0 +1,43 @@
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load data
+data = pd.read_csv("C:/Users/vinay/OneDrive/Desktop/bI/datasets/Wholesale customers data.csv")
+print(data.head())  # Check if the file is loaded correctly
+
+# Normalize data
+from sklearn.preprocessing import normalize
+data_scaled = normalize(data)
+data_scaled = pd.DataFrame(data_scaled, columns=data.columns)
+print(data_scaled.head())  # Check column names
+
+# Hierarchical Clustering Dendrogram
+import scipy.cluster.hierarchy as shc
+plt.figure(figsize=(10, 7))
+plt.title("Dendrograms")
+dend = shc.dendrogram(shc.linkage(data_scaled, method='ward'))
+plt.axhline(y=6, color='r', linestyle='--')
+
+# Apply Agglomerative Clustering
+from sklearn.cluster import AgglomerativeClustering
+cluster = AgglomerativeClustering(n_clusters=2, metric='euclidean', linkage='ward')
+cluster.fit_predict(data_scaled)
+
+# Plot Clusters
+plt.figure(figsize=(10, 7))
+if 'Milk' in data_scaled.columns and 'Grocery' in data_scaled.columns:
+    plt.scatter(data_scaled['Milk'], data_scaled['Grocery'], c=cluster.labels_)
+    plt.xlabel("Milk")
+    plt.ylabel("Grocery")
+    plt.title("Clusters")
+    plt.show()
+else:
+    print("Error: Columns 'Milk' and 'Grocery' not found in data_scaled.")
+
+
+ python --version
+        pip install -U Scikit-learn 
+        pip install pandas
+        pip install matplotlib
